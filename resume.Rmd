@@ -1,0 +1,141 @@
+---
+title: Jason Eastman's Resume"
+author: Jason Eastman
+date: "`r Sys.Date()`"
+output:
+  pagedown::html_resume:
+    css: ['css/custom_resume.css', 'css/styles.css', 'resume']
+    # set it to true for a self-contained HTML page but it'll take longer to render
+    self_contained: true
+---
+
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  results='asis', 
+  echo = FALSE
+)
+library(tidyverse)
+library(glue)
+
+# Set this to true to have links turned into footnotes at the end of the document
+PDF_EXPORT <- FALSE
+
+# Holds all the links that were inserted for placement at the end
+links <- c()
+
+source('parsing_functions.R')
+
+
+# First let's get the data, filtering to only the items tagged as
+# Resume items
+position_data <- read_csv('positions.csv') %>% 
+  filter(in_resume) %>% 
+  mutate(
+    # Build some custom sections by collapsing others
+    section = case_when(
+      section %in% c('research_positions', 'industry_positions') ~ 'positions', 
+      section %in% c('data_science_writings', 'by_me_press') ~ 'writings',
+      TRUE ~ section
+    )
+  ) 
+
+```
+
+
+Aside
+================================================================================
+
+
+![logo](beta_dist.png){width=100%}
+
+Contact {#contact}
+--------------------------------------------------------------------------------
+
+
+
+- <i class="fa fa-envelope"></i> jason.eastman@live.com
+- <i class="fa fa-github"></i> github.com/Vodkard
+- <i class="fa fa-link"></i> [Jason-Eastman.com](http://www.jason-eastman.com/)
+
+
+
+
+Language Skills {#skills}
+--------------------------------------------------------------------------------
+
+
+```{r}
+skills <- tribble(
+  ~skill,               ~level,
+  "C++",                5,
+  "Java",               5,
+  "R",                  4,
+  "Python",             3.5,
+  "Bash",               3,
+  "SQL",                3
+)
+
+build_skill_bars(skills)
+```
+
+
+
+Open Source Contributions {#open-source}
+--------------------------------------------------------------------------------
+
+All projects available at `github.com/vodkard/<name>`
+
+
+- `montyhall`: This package represents the Monty Hall game.
+
+
+More info {#more-info}
+--------------------------------------------------------------------------------
+
+See full CV at vodkard.github.io/cv for more complete list of positions and publications.
+
+
+Disclaimer {#disclaimer}
+--------------------------------------------------------------------------------
+
+Made w/ [**pagedown**](https://github.com/rstudio/pagedown). 
+
+Source code: [github.com/nstrayer/cv](https://github.com/nstrayer/cv).
+
+Last updated on `r Sys.Date()`.
+
+
+
+
+Main
+================================================================================
+
+Jason Eastman {#title}
+--------------------------------------------------------------------------------
+
+
+```{r}
+intro_text <- "Budding Data Analyst with advanced technical skills and a strong background in mathematics, statistics and computer science. Currently attending Arizona State University for a Master of Science in Program Evaluation and Data Analytics. Advanced qualitative and quantitative analysis skills."
+
+cat(sanitize_links(intro_text))
+```
+
+
+
+Education {data-icon=graduation-cap data-concise=true}
+--------------------------------------------------------------------------------
+
+```{r}
+print_section(position_data, 'education')
+```
+
+
+
+Experience {data-icon=chart-line}
+--------------------------------------------------------------------------------
+
+```{r}
+print_section(position_data, 'experience')
+```
+

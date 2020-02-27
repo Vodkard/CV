@@ -1,0 +1,175 @@
+---
+title: "Jason Eastman's CV"
+author: Jason Eastman
+date: "`r Sys.Date()`"
+output:
+  pagedown::html_resume:
+    css: ['css/styles.css', 'resume']
+    # set it to true for a self-contained HTML page but it'll take longer to render
+    self_contained: true
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  results='asis', 
+  echo = FALSE
+)
+
+library(glue)
+library(tidyverse)
+
+# Set this to true to have links turned into footnotes at the end of the document
+PDF_EXPORT <- FALSE
+
+# Holds all the links that were inserted for placement at the end
+links <- c()
+
+source('parsing_functions.R')
+
+# Load csv with position info
+position_data <- read_csv('positions.csv')
+```
+
+
+```{r}
+# When in export mode the little dots are unaligned, so fix that. 
+if(PDF_EXPORT){
+  cat("
+  <style>
+  :root{
+    --decorator-outer-offset-left: -6.5px;
+  }
+  </style>")
+}
+```
+
+
+Aside
+================================================================================
+
+
+![logo](beta_dist.png){width=100%}
+
+```{r}
+# When in export mode the little dots are unaligned, so fix that. 
+if(PDF_EXPORT){
+  cat("View this CV online with links at _Vodkard.github.io/cv_")
+} else {
+  cat("[<i class='fas fa-download'></i> Download a PDF of this CV](https://github.com/Vodkard/cv/raw/master/eastman_cv.pdf)")
+}
+```
+
+Contact {#contact}
+--------------------------------------------------------------------------------
+
+
+- <i class="fa fa-envelope"></i> jason.eastman@live.com
+- <i class="fa fa-github"></i> github.com/Vodkard
+- <i class="fa fa-link"></i> [Jason-Eastman.com](http://www.jason-eastman.com/)
+
+
+
+Language Skills {#skills}
+--------------------------------------------------------------------------------
+
+```{r}
+skills <- tribble(
+  ~skill,               ~level,
+  "C++",                5,
+  "Java",               5,
+  "R",                  4,
+  "Python",             3.5,
+  "Bash",               3,
+  "SQL",                3
+)
+
+build_skill_bars(skills)
+```
+
+
+
+
+
+Disclaimer {#disclaimer}
+--------------------------------------------------------------------------------
+
+Made with the R package [**pagedown**](https://github.com/rstudio/pagedown). 
+
+The source code is available at [github.com/nstrayer/cv](https://github.com/nstrayer/cv).
+
+Last updated on `r Sys.Date()`.
+
+
+
+
+Main
+================================================================================
+
+Jason Eastman {#title}
+--------------------------------------------------------------------------------
+
+
+```{r}
+intro_text <- "Budding Data Analyst with advanced technical skills and a strong background in mathematics, statistics and computer science. Currently attending Arizona State University for a Master of Science in Program Evaluation and Data Analytics. Advanced qualitative and quantitative analysis skills."
+
+cat(sanitize_links(intro_text))
+```
+
+
+
+Education {data-icon=graduation-cap data-concise=true}
+--------------------------------------------------------------------------------
+
+```{r}
+print_section(position_data, 'education')
+```
+
+
+
+Experience {data-icon=chart-line}
+--------------------------------------------------------------------------------
+
+```{r}
+print_section(position_data, 'experience')
+```
+
+
+
+Data Analysis Projects {data-icon=suitcase}
+--------------------------------------------------------------------------------
+
+```{r}
+print_section(position_data, 'data_analysis_projects')
+```
+
+<br>
+<br>
+<br>
+
+Video Game Projects {data-icon=laptop}
+--------------------------------------------------------------------------------
+
+```{r}
+print_section(position_data, 'video_game_projects')
+```
+
+
+```{r}
+if(PDF_EXPORT){
+  cat("
+  
+Links {data-icon=link}
+--------------------------------------------------------------------------------
+
+<br>
+
+
+")
+  
+  walk2(links, 1:length(links), function(link, index){
+    print(glue('{index}. {link}'))
+  })
+}
+```
+
+
